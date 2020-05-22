@@ -11,6 +11,7 @@ import uuid
 # human readable strings.
 from base64 import b64encode
 
+MAX_DEPTH = 12
 
 def get_contentsize():
     
@@ -25,12 +26,12 @@ def bernoulli(probability):
 
 
 
-def create_directory(path,directory_probability = 0.6,file_probability = 0.75) -> None:
+def create_directory(path,depth,directory_probability = 0.6,file_probability = 0.75,max_depth=MAX_DEPTH) -> None:
 
     while(bernoulli(directory_probability)):
         dir_basename = get_filename()
         os.mkdir(os.path.join(path,dir_basename))
-        create_directory(os.path.join(path,dir_basename))
+        create_directory(os.path.join(path,dir_basename),depth+1)
 
     while(bernoulli(file_probability)):
         with open(os.path.join(path,get_filename()),"w") as fp:
@@ -52,7 +53,7 @@ if __name__ == "__main__":
 
     entry_basename = get_filename()
     os.mkdir(os.path.join(os.getcwd(),entry_basename))
-    create_directory(os.path.join(os.getcwd(),entry_basename))
+    create_directory(os.path.join(os.getcwd(),entry_basename),1)
     
 
 
