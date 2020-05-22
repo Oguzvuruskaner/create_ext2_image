@@ -3,15 +3,18 @@ import time
 import random
 import sys 
 
-# For random string generation
-# UUID ( Universally Unique IDentifier)
-import uuid
-
 # For converting urandom random binaries to
 # human readable strings.
 from base64 import b64encode
 
+import faker
+
+
 MAX_DEPTH = 12
+FAKER = faker.Faker()
+
+get_filename = lambda : FAKER.first_name_male()
+get_dirname = lambda : FAKER.first_name_female()
 
 def get_contentsize():
     
@@ -28,8 +31,11 @@ def bernoulli(probability):
 
 def create_directory(path,depth,directory_probability = 0.6,file_probability = 0.75,max_depth=MAX_DEPTH) -> None:
 
+    if depth == MAX_DEPTH:
+        return
+
     while(bernoulli(directory_probability)):
-        dir_basename = get_filename()
+        dir_basename = get_dirname()
         os.mkdir(os.path.join(path,dir_basename))
         create_directory(os.path.join(path,dir_basename),depth+1)
 
@@ -41,9 +47,6 @@ def create_directory(path,depth,directory_probability = 0.6,file_probability = 0
 
 
 
-def get_filename() -> str:
-
-    return uuid.uuid1().hex[0:6]
 
 
 if __name__ == "__main__":
